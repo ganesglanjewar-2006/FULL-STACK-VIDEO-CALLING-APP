@@ -15,6 +15,7 @@ import ChatIcon from '@mui/icons-material/Chat'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import FlipCameraIosIcon from '@mui/icons-material/FlipCameraIos';
 import { AuthContext } from '../contexts/AuthContext';
 import { useContext } from 'react';
 import server from '../environment';
@@ -52,6 +53,7 @@ export default function VideoMeetComponent() {
     const videoRef = useRef([]);
     const [videos, setVideos] = useState([]);
     const initialSetupRef = useRef(true);
+    const [isFrontCamera, setIsFrontCamera] = useState(true);
 
     const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
 
@@ -321,6 +323,9 @@ export default function VideoMeetComponent() {
                     return updatedVideos;
                 });
             }
+
+            // Sync current state to new user
+            socketRef.current.emit("user-state", { video, audio });
         };
 
         // Add the local video stream
@@ -371,7 +376,13 @@ export default function VideoMeetComponent() {
                     console.log("User joined, connecting to: ", id);
                     setupNewConnection(id, false);
                 }
-            })
+            });
+
+            socketRef.current.on('user-state', (id, state) => {
+                setVideos(videos => videos.map(v => 
+                    v.socketId === id ? { ...v, videoOff: !state.video, audioOff: !state.audio } : v
+                ));
+            });
         })
     };
 
@@ -399,6 +410,7 @@ export default function VideoMeetComponent() {
                 track.enabled = !track.enabled;
             });
         }
+        socketRef.current?.emit("user-state", { video: !video, audio });
     }
     let handleAudio = () => {
         setAudio(!audio)
@@ -408,6 +420,7 @@ export default function VideoMeetComponent() {
                 track.enabled = !track.enabled;
             });
         }
+        socketRef.current?.emit("user-state", { video, audio: !audio });
     }
 
     useEffect(() => {
@@ -418,6 +431,23 @@ export default function VideoMeetComponent() {
     let handleScreen = () => {
         setScreen(!screen);
     }
+
+    let toggleCamera = async () => {
+        const newMode = !isFrontCamera;
+        setIsFrontCamera(newMode);
+        
+        const constraints = {
+            video: { facingMode: newMode ? "user" : "environment" },
+            audio: true
+        };
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+            getUserMediaSuccess(stream);
+        } catch (e) {
+            console.error("Error switching camera:", e);
+        }
+    };
 
     let handleEndCall = () => {
         try {
@@ -561,6 +591,13 @@ export default function VideoMeetComponent() {
                                         playsInline
                                     ></video>
                                     <div className={styles.videoNameTag}>Participant {video.socketId.slice(0, 4)}</div>
+                                    {video.videoOff && (
+                                        <div className={styles.videoPlaceholder}>
+                                            <div className={styles.avatar}>
+                                                {video.socketId.slice(0, 2).toUpperCase()}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -627,6 +664,10 @@ export default function VideoMeetComponent() {
                                     <ScreenShareIcon />
                                 </IconButton>
                             )}
+
+                            <IconButton onClick={toggleCamera} className={styles.controlBtn}>
+                                <FlipCameraIosIcon />
+                            </IconButton>
 
                             <IconButton onClick={handleEndCall} className={styles.endCallBtn}>
                                 <CallEndIcon />
