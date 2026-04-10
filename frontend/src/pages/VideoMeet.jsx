@@ -15,8 +15,8 @@ import ChatIcon from '@mui/icons-material/Chat'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import server from '../environment';
 
-const server = process.env.REACT_APP_SERVER || "http://localhost:8000";
 const server_url = server;
 
 var connections = {};
