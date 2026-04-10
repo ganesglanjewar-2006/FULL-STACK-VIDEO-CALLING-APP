@@ -15,6 +15,8 @@ import ChatIcon from '@mui/icons-material/Chat'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import { AuthContext } from '../contexts/AuthContext';
+import { useContext } from 'react';
 import server from '../environment';
 
 const server_url = server;
@@ -34,7 +36,7 @@ export default function VideoMeetComponent() {
     const navigate = useNavigate();
 
     let localVideoref = useRef();
-
+    const { addToUserHistory } = useContext(AuthContext);
     const [videoAvailable, setVideoAvailable] = useState(false);
     const [audioAvailable, setAudioAvailable] = useState(false);
     const [video, setVideo] = useState();
@@ -422,7 +424,7 @@ export default function VideoMeetComponent() {
             let tracks = localVideoref.current.srcObject.getTracks()
             tracks.forEach(track => track.stop())
         } catch (e) { }
-        window.location.href = "/home"
+        navigate("/home")
     }
 
     let openChat = () => {
@@ -460,6 +462,7 @@ export default function VideoMeetComponent() {
     let connect = () => {
         setAskForUsername(false);
         getMedia();
+        addToUserHistory(window.location.href);
     }
 
 
