@@ -1,0 +1,291 @@
+.meetVideoContainer {
+    position: relative;
+    height: 100vh;
+    background: #fcfdfe;
+    overflow: hidden;
+    color: #3e4042;
+    font-family: 'Google Sans', 'Inter', Roboto, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main Area */
+.mainConferenceArea {
+    flex: 1;
+    position: relative;
+    display: flex;
+    padding: 16px;
+    gap: 16px;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.conferenceView { 
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-auto-rows: 1fr;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow-y: auto;
+}
+
+.videoWrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #202124;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+}
+
+.videoWrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.videoNameTag {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.meetUserVideo {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    height: 140px;
+    width: 200px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    z-index: 50;
+    background: #202124;
+    border: 2px solid white;
+}
+
+/* Sidebar / Chat */
+.chatRoom {
+    width: 360px;
+    background: white;
+    border-radius: 8px;
+    margin-left: 16px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+    transition: width 0.3s ease;
+    z-index: 100;
+}
+
+.chatContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 16px;
+}
+
+.chatContainer h1 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    color: #202124;
+}
+
+.chattingDisplay {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.chattingDisplay div {
+    margin-bottom: 16px;
+}
+
+.chattingDisplay p:first-child {
+    font-size: 13px;
+    font-weight: 500;
+    color: #202124;
+}
+
+.chattingDisplay p:last-child {
+    font-size: 14px;
+    color: #3c4043;
+    line-height: 20px;
+}
+
+.chattingArea {
+    padding-top: 16px;
+    display: flex;
+    gap: 12px;
+}
+
+/* Footer Bar */
+.footerBar {
+    height: 80px;
+    padding: 0 24px;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f1f3f4;
+    z-index: 200;
+}
+
+.footerLeft {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.meetingDivider {
+    color: #dadce0;
+}
+
+.footerCenter {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.controlBtn, .controlBtnOff, .controlBtnActive, .endCallBtn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50% !important;
+    border: 1px solid #dadce0 !important;
+}
+
+.controlBtnOff {
+    background-color: #ea4335 !important;
+    color: white !important;
+    border: none !important;
+}
+
+.controlBtnActive {
+    background-color: rgba(25, 118, 210, 0.1) !important;
+    color: #1976d2 !important;
+}
+
+.endCallBtn {
+    background-color: #ea4335 !important;
+    color: white !important;
+    border: none !important;
+    width: 64px;
+    border-radius: 32px !important;
+}
+
+.footerRight {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
+}
+
+.participantCount {
+    font-size: 12px;
+    margin-left: 4px;
+    font-weight: 500;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .footerBar {
+        padding: 0 12px;
+        height: 72px;
+    }
+
+    .footerLeft {
+        display: none;
+    }
+
+    .footerCenter {
+        gap: 8px;
+    }
+
+    .controlBtn, .controlBtnOff, .controlBtnActive {
+        width: 40px;
+        height: 40px;
+    }
+
+    .endCallBtn {
+        width: 54px;
+        height: 40px;
+    }
+
+    .chatRoom {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: auto;
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .conferenceView {
+        grid-template-columns: 1fr;
+    }
+
+    .meetUserVideo {
+        width: 120px;
+        height: 80px;
+        bottom: 12px;
+        right: 12px;
+    }
+}
+
+/* Lobby Styling */
+.lobbyContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #fff;
+    padding: 24px;
+    gap: 48px;
+}
+
+.lobbyVideoView {
+    flex: 1;
+    max-width: 740px;
+    aspect-ratio: 16/9;
+    background: #202124;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+}
+
+.lobbyVideoView video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.lobbyControls {
+    flex: 1;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    text-align: left;
+}
+
+.lobbyControls h2 {
+    font-size: 28px;
+    font-weight: 400;
+    color: #202124;
+}
