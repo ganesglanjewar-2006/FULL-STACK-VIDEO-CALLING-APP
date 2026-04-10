@@ -437,13 +437,37 @@ export default function VideoMeetComponent() {
         setIsFrontCamera(newMode);
         
         const constraints = {
-            video: { facingMode: newMode ? "user" : "environment" },
-            audio: true
+            video: { facingMode: newMode ? "user" : { ideal: "environment" } },
+            audio: audio
         };
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia(constraints);
-            getUserMediaSuccess(stream);
+            const newTrack = stream.getVideoTracks()[0];
+
+            // Update local preview
+            if (localVideoref.current) {
+                localVideoref.current.srcObject = stream;
+            }
+
+            // Replace track for all existing connections
+            for (let id in connections) {
+                const senders = connections[id].getSenders();
+                const videoSender = senders.find(sender => sender.track && sender.track.kind === 'video');
+                if (videoSender) {
+                    videoSender.replaceTrack(newTrack);
+                }
+            }
+
+            // Stop old tracks to save battery/resources
+            if (window.localStream) {
+                window.localStream.getVideoTracks().forEach(track => track.stop());
+            }
+
+            window.localStream = stream;
+            setVideo(true);
+            socketRef.current?.emit("user-state", { video: true, audio });
+
         } catch (e) {
             console.error("Error switching camera:", e);
         }
